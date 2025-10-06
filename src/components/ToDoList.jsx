@@ -1,56 +1,36 @@
-import {useState} from 'react';
-
-const initialToDos = [
-	{id : 1, text : "Make a cup of Coffee"},
-	{id : 2, text : "Has to go and take Leo for a walk"}
-];
-
+import {useState, useEffect} from 'react';
 
 const ToDoList = () => {
 	
-	const [todos, setTodos] = useState(initialToDos);
-	
-	const [newtodotext, setNewtodotext] = useState('');
-	
-	const handleSubmit = (e) => {
-		// I think the thing below is used to clear some buffer or to prevent some default value i guess
-		e.preventDefault();
-		
-		if(newtodotext.trim() == ''){
-			return '';
-		} 	
-		
-		const newTodo = {
-			id : Date.now(),
-			text : newtodotext
-		};
-		
-		setTodos([...todos, newTodo]);
-		
-		setNewtodotext('');
+	const [todos, setTodos] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		fetch("https://jsonplaceholder.typicode.com/todos?_limit=10")
+		.then(res => res.json())
+		.then(data => {
+			const formatedData = data.map(item => ({
+				id : item.id,
+				text : id.title 
+			}));
+		})
+			setTodos(formatedData);
+			setIsLoading(false);
+	})
+
+	if (isLoading) {
+		return <p>The Website is Loading...</p>
 	}
-	
+
 	return (
 		<div>
-			<form onSubmit={handleSubmit}>
-				<input 
-					type = "text"
-					placeholder = "Add a new Task"
-					value = {newtodotext}
-					onChange = {e => setNewtodotext(e.target.value)}
-				/>
-				<button type="submit" >Add To-Do</button>
-			</form>
+			<h1>Welcome to my To Do list App ! </h1>
 
-				<h2>My To-Do List </h2>
-				<ul>
-					{todos.map(todo => {
-						return <li key={todo.id}>{todo.text}</li>
-					})}
-				</ul>
 		</div>
-	) 
+	)
+
+
+
 }
 
-
-export default ToDoList ;
+export default ToDoList;
